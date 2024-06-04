@@ -3,7 +3,7 @@ Daftar Disini [HEXACORE BOT](https://t.me/HexacoinBot/wallet?startapp=1993663749
 
 ## instalasi
 ```bash
->> git clone https://github.com/kutu48/Hexacore-Auto.git
+>> git clone https://github.com/Punten10/Hexa-Auto.git
 >> cd Hexa-Auto
 >> pip install requests
 >> pip install time
