@@ -94,7 +94,9 @@ print("1. Claim mission")
 print("2. Naik level")
 print("3. Cek level")
 print("4. Cek Pasive income")
-print("5. Buy Tap 1 Day")
+print("5. Buy Tap 1 Day ( 270 AGO )")
+print("6. Buy Tap 3 Day ( 1125 AGO )")
+print("7. Buy Tap 7 Day ( 1800 AGO )")
 
 # Membaca pilihan pengguna
 choice = input("Masukkan pilihan Anda: ")
@@ -152,6 +154,18 @@ for user_id, username in user_data:
                 buy_tap_payload = {"name": "1_day"}
                 buy_tap_response = requests.post(buy_tap_url, headers=common_headers, json=buy_tap_payload)
                 print_results(username, buy_tap_result=buy_tap_response.text)
+
+            elif choice == "6":
+                # Buy TAP 1 Day request
+                buy_tap_payload = {"name": "3_days"}
+                buy_tap_response = requests.post(buy_tap_url, headers=common_headers, json=buy_tap_payload)
+                print_results(username, buy_tap_result=buy_tap_response.text)
+
+            elif choice == "7":
+                # Buy TAP 1 Day request
+                buy_tap_payload = {"name": "7_days"}
+                buy_tap_response = requests.post(buy_tap_url, headers=common_headers, json=buy_tap_payload)
+                print_results(username, buy_tap_result=buy_tap_response.text)        
                 
             else:
                 print("Pilihan tidak valid.")
