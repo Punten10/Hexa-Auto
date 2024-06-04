@@ -26,7 +26,7 @@ Ubah data.txt dengan id:username tg mu
 
 ### Untuk Auto Claim
 ```shell
->> python hexaclaimpy
+>> python hexaclaim.py
 >> #Untuk Auto Claim
 #1 - Claim Mission
 #2 - Upgrade Level
