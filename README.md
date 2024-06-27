@@ -13,8 +13,10 @@ Daftar Disini [HEXACORE BOT](https://t.me/HexacoinBot/wallet?startapp=1993663749
 ```shell
 Ubah data.txt dengan id:username tg mu
 >> SUPPORT MULTI AKUN
->> id1:@username1
->> id2:@username2
+>> tgid1:@username1
+>> tgid2:@username2
+# Jangan Kasih Space Kosong Dibawahnya
+
 ```
 ### Untuk Auto Claim Dan Taps Mining
 ```shell
