@@ -9,7 +9,7 @@ url_cek_mission = "https://ago-api.hexacore.io/api/mission-complete"
 passive_income_url = "https://ago-api.hexacore.io/api/total-passive"
 upgrade_level_url = "https://ago-api.hexacore.io/api/upgrade-level"
 check_level_url = "https://ago-api.hexacore.io/api/level"
-buy_tap_url = "https://ago-api.hexacore.io/api/get-tap-passes"
+buy_tap_url = "https://ago-api.hexacore.io/api/buy-tap-passes"
 
 # Header umum untuk request
 common_headers = {
