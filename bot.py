@@ -1,5 +1,6 @@
 import requests
 import time
+from datetime import datetime
 
 def authenticate(user_id, username):
     auth_url = "https://ago-api.hexacore.io/api/app-auth"
@@ -107,13 +108,64 @@ def get_daily_reward(auth_token, user_id):
 
     daily_reward = daily_reward_response.json()
 
+    if 'last_reward_time' in daily_reward:
+        last_reward_time = daily_reward['last_reward_time']
+        readable_time = datetime.fromtimestamp(last_reward_time).strftime('%Y-%m-%d %H:%M:%S')
+        daily_reward['last_reward_time'] = readable_time
+
     return daily_reward
 
+def get_daily_checkin_config(auth_token):
+    config_url = "https://ago-api.hexacore.io/api/daily-checkin"
+
+    config_headers = {
+        "Authorization": auth_token
+    }
+
+    config_response = requests.get(config_url, headers=config_headers)
+
+    config = config_response.json()
+
+    return config
+
+def perform_daily_checkin(auth_token, day):
+    checkin_url = "https://ago-api.hexacore.io/api/daily-checkin"
+
+    checkin_headers = {
+        "Authorization": auth_token,
+        "Content-Type": "application/json"
+    }
+
+    checkin_payload = {
+        "day": day
+    }
+
+    checkin_response = requests.post(checkin_url, headers=checkin_headers, json=checkin_payload)
+
+    checkin_result = checkin_response.json()
+
+    if not checkin_result.get('success', False):
+        daily_checkin_log = "Daily check-in has already been completed."
+    else:
+        available_at_timestamp = checkin_result.get('available_at')
+        available_at = datetime.fromtimestamp(available_at_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        daily_checkin_log = f"Check-in successful! Next available at: {available_at}"
+
+    return checkin_result, daily_checkin_log
+
+def format_daily_reward_log(daily_reward):
+    if 'error' in daily_reward:
+        error_message = daily_reward['error']
+        last_reward_time = daily_reward.get('last_reward_time', 'N/A')
+        return f"⚠️  {error_message} | Last reward time: {last_reward_time}"
+    else:
+        return f"🎁 Reward details: {daily_reward}"
+
 def main():
-    print("=========HEXA BOT=============")
-    taps = int(input("Taps: "))
-    sleep_time = int(input("Sleep time (in seconds): "))
-    print("===============================")
+    print("=========✨ WELCOME TO HEXA BOT ✨=============")
+    taps = int(input("🔢 Enter Taps: "))
+    sleep_time = int(input("⏲️ Enter Sleep time (in seconds): "))
+    print("==============================================")
 
     with open("data.txt", "r") as file:
         user_data = [line.strip().split(":") for line in file.readlines()]
@@ -128,22 +180,37 @@ def main():
                 available_taps = get_available_taps(auth_token)
                 reward_available = get_reward_available(auth_token, user_id)
                 daily_reward = get_daily_reward(auth_token, user_id)
+                daily_checkin_config = get_daily_checkin_config(auth_token)
+                
+                # Initialize the variables to ensure they exist
+                daily_checkin_result = None
+                daily_checkin_log = "No check-in performed."
 
-                print("=========HEXA BOT=============")
-                print(f"username: \"{username}\"")
-                print(f"Click: {click_status}")
-                print(f"Balance Response: {balance}")
-                print(f"available_taps: {available_taps}")
-                print(f"availabl_Reward: {reward_available}")
-                print(f"daily-reward: {daily_reward}")
-                print("===============================")
+                try:
+                    daily_checkin_result, daily_checkin_log = perform_daily_checkin(auth_token, 1)  # Assuming day 1 for simplicity
+                except Exception as e:
+                    daily_checkin_log = f"Error during check-in: {e}"
+
+                # Format daily reward log
+                daily_reward_log = format_daily_reward_log(daily_reward)
+
+                print("=========✨ HEXA BOT SUMMARY ✨=============")
+                print(f"👤 Username: \"{username}\"")
+                print(f"🖱️ Click Status: {'✅ Success' if click_status else '❌ Failed'}")
+                print(f"💰 Balance: {balance}")
+                print(f"🔄 Available Taps: {available_taps}")
+                print(f"🎁 Available Reward: {reward_available}")
+                print(f"🎉 Daily Reward: {daily_reward_log}")
+                print(f"📅 Daily Check-in: {daily_checkin_log}")
+                print("===========================================")
             except Exception as e:
-                print(f"Error for user {username} (ID: {user_id}): {e}")
+                print(f"❌ Error for user {username} (ID: {user_id}): {e}")
 
-        print(f"Next run in {sleep_time} seconds...")
+        print(f"⏳ Next run in {sleep_time} seconds...")
         for remaining in range(sleep_time, 0, -1):
-            print(f"\rCountdown: {remaining} seconds", end="")
+            print(f"\r⏰ Countdown: {remaining} seconds", end="")
             time.sleep(1)
+        print("")  # Move to the next line after the countdown
 
 if __name__ == "__main__":
     main()
